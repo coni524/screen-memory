@@ -30,7 +30,7 @@ jobs:
   version:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Check the tag against Cargo.toml
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
@@ -45,7 +45,7 @@ jobs:
     needs: version
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Load the certificate and the notarization credentials
         env:
@@ -81,7 +81,7 @@ jobs:
           NOTARY_KEYCHAIN="$RUNNER_TEMP/build.keychain-db" \
             client-rs/packaging/make-dmg.sh "$APPLE_SIGNING_IDENTITY" screen-memory-notary
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dmg
           path: client-rs/dist/*.dmg
@@ -91,7 +91,7 @@ jobs:
     needs: version
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Install Inno Setup
         run: choco install innosetup --no-progress -y
@@ -109,7 +109,7 @@ jobs:
           New-Item -ItemType Directory -Force -Path installer | Out-Null
           Copy-Item $exe.FullName installer\
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: installer
           path: installer/*.exe
@@ -120,7 +120,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           path: artifacts
           merge-multiple: true
