@@ -8,18 +8,18 @@
     "cdk": "cdk"
   },
   "devDependencies": {
-    "@swc/core": "^1.15.0",
+    "@swc/core": "^1.15.47",
     "@swc/jest": "^0.2.39",
-    "@types/jest": "^30",
-    "@types/node": "^24.10.1",
-    "aws-cdk": "2.1134.0",
-    "jest": "^30",
-    "tsx": "^4.23.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^26.1.2",
+    "aws-cdk": "2.1135.0",
+    "jest": "^30.4.2",
+    "tsx": "^4.23.8",
     "typescript": "~7.0.2"
   },
   "dependencies": {
-    "@aws-cdk/aws-lambda-python-alpha": "2.262.1-alpha.0",
-    "aws-cdk-lib": "^2.262.1",
-    "constructs": "^10.5.0"
+    "@aws-cdk/aws-lambda-python-alpha": "2.263.0-alpha.0",
+    "aws-cdk-lib": "^2.263.0",
+    "constructs": "^10.8.1"
   }
 }
