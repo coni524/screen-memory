@@ -27,14 +27,21 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 $version = (Select-String -Path (Join-Path $root "Cargo.toml") -Pattern '^version\s*=\s*"([^"]+)"' |
     Select-Object -First 1).Matches[0].Groups[1].Value
 
-$iscc = @(
-    (Join-Path ${env:ProgramFiles(x86)} "Inno Setup 6\ISCC.exe"),
-    (Join-Path $env:ProgramFiles "Inno Setup 6\ISCC.exe"),
-    (Join-Path $env:LOCALAPPDATA "Programs\Inno Setup 6\ISCC.exe")
-) | Where-Object { $_ -and (Test-Path $_) } | Select-Object -First 1
+# Inno Setup installs into a directory named after its major version
+# ("Inno Setup 6", "Inno Setup 7", ...), so match any of them and take the
+# newest instead of pinning one version. Sorting the paths in reverse puts the
+# highest major first. installer.iss stays compatible with 6 as well: it sets
+# ArchitecturesAllowed and ArchitecturesInstallIn64BitMode itself and does not
+# use the SetupArchitecture directive that only 7 understands.
+$iscc = @($env:ProgramFiles, ${env:ProgramFiles(x86)}, (Join-Path $env:LOCALAPPDATA "Programs")) |
+    Where-Object { $_ } |
+    ForEach-Object { Get-ChildItem -Path (Join-Path $_ "Inno Setup *\ISCC.exe") -ErrorAction SilentlyContinue } |
+    Sort-Object FullName -Descending |
+    Select-Object -First 1 -ExpandProperty FullName
 if (-not $iscc) {
-    Write-Error "ISCC.exe not found. Install Inno Setup 6: winget install JRSoftware.InnoSetup"
+    Write-Error "ISCC.exe not found. Install Inno Setup: winget install JRSoftware.InnoSetup"
 }
+Write-Host "Using $iscc"
 
 & $iscc "/DAppVersion=$version" (Join-Path $PSScriptRoot "installer.iss")
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
