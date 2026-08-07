@@ -20,7 +20,7 @@ Download the latest macOS DMG or Windows installer from the [releases page](http
 
 ### macOS
 
-Open the DMG and drag `Screen Memory.app` into Applications. The app is signed with a Developer ID certificate and notarized by Apple, so it opens without a warning. Launch it once from Applications, grant it Screen Recording under System Settings > Privacy & Security when macOS asks, then quit and reopen the app so the permission takes effect. To start it at login, add it under System Settings > General > Login Items.
+Open the DMG and drag `Screen Memory.app` into Applications. Launch it once from Applications, grant it Screen Recording under System Settings > Privacy & Security when macOS asks, then quit and reopen the app so the permission takes effect. To start it at login, add it under System Settings > General > Login Items.
 
 ### Windows
 
@@ -38,7 +38,7 @@ You choose how much leaves your machine, and you can switch at any time from the
 | AWS analysis, sending text | Metadata JSON with on-device OCR text | Keeping images on your machine while still getting daily reports |
 | Local only, no upload | Nothing | Using it without AWS at all. OCR text is appended to daily JSONL files on your machine, which you can analyze later with any LLM (Claude Code works nicely) |
 
-In local mode, no AWS setup is needed: install the client and you are done.
+In local mode, no AWS setup is needed: install the client and you are done. Capture and OCR use only what the OS already ships: ScreenCaptureKit and the Vision framework on macOS, `PrintWindow` and `Windows.Media.Ocr` on Windows. The client bundles no OCR engine or model of its own and calls no cloud text-recognition service, so in local mode nothing about your screen leaves the machine.
 
 ## Privacy notes
 
