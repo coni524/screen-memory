@@ -14,6 +14,10 @@
 #   xcrun notarytool store-credentials screen-memory-notary \
 #     --apple-id <Apple ID email> --team-id <team ID> --password <app-specific password>
 # Issue the app-specific password at https://account.apple.com > Sign-In and Security.
+#
+# Set NOTARY_KEYCHAIN to the path of the keychain holding that profile when it
+# is not the login keychain. The release workflow builds a throwaway keychain
+# per run, and notarytool would not look there on its own.
 set -euo pipefail
 
 SCRIPT_DIR="${0:A:h}"
@@ -26,6 +30,7 @@ VERSION=$(sed -n 's/^version = "\(.*\)"/\1/p' "$CLIENT_DIR/Cargo.toml" | head -1
 DMG="$DIST/screen-memory-$VERSION.dmg"
 IDENTITY="${1:-screen-memory}"
 NOTARY_PROFILE="${2:-screen-memory-notary}"
+NOTARY_KEYCHAIN="${NOTARY_KEYCHAIN:-}"
 
 "$SCRIPT_DIR/build-app.sh" "$IDENTITY"
 
@@ -39,7 +44,11 @@ hdiutil create -volname "Screen Memory" -srcfolder "$DMG_ROOT" -format UDZO -ov 
 if [[ "$IDENTITY" == "Developer ID Application"* ]]; then
     codesign --force --sign "$IDENTITY" --timestamp "$DMG"
     echo "Submitting for notarization (takes a few minutes)..."
-    xcrun notarytool submit "$DMG" --keychain-profile "$NOTARY_PROFILE" --wait
+    NOTARY_ARGS=(--keychain-profile "$NOTARY_PROFILE")
+    if [[ -n "$NOTARY_KEYCHAIN" ]]; then
+        NOTARY_ARGS+=(--keychain "$NOTARY_KEYCHAIN")
+    fi
+    xcrun notarytool submit "$DMG" "${NOTARY_ARGS[@]}" --wait
     xcrun stapler staple "$DMG"
 fi
 
