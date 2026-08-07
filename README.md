@@ -151,3 +151,7 @@ The default region is `ap-northeast-1` (Tokyo), and the Bedrock model ID uses th
 ## Language
 
 The app UI is bilingual: it follows the OS language (Japanese or English) by default, and you can force either language from the settings window (the change applies after a restart). Record summaries and daily reports are generated in Japanese; edit the prompts in `lambdas/analyze/prompts.py` and `lambdas/report/index.py` if you want another language.
+
+## License
+
+MIT. See [LICENSE](LICENSE).

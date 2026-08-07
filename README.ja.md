@@ -174,3 +174,8 @@ cognito_domain = "<CognitoDomain>"
 既定では OS の言語設定に従い、設定ウィンドウの「言語」でどちらかに固定もできます（反映はアプリの再起動後）。
 記録の要約と日報は日本語で生成されます。
 他の言語にしたい場合は `lambdas/analyze/prompts.py` と `lambdas/report/index.py` のプロンプトを書き換えてください。
+
+## ライセンス
+
+MIT ライセンスです。
+全文は [LICENSE](LICENSE) にあります。
