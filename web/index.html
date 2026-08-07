@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>screen-memory</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>screen-memory</h1>
+  <nav class="date-nav">
+    <button id="prev-day" type="button" data-i18n-aria="ariaPrevDay" aria-label="前日">◀</button>
+    <input id="date" type="date">
+    <button id="next-day" type="button" data-i18n-aria="ariaNextDay" aria-label="翌日">▶</button>
+  </nav>
+  <nav class="tabs" role="tablist">
+    <button id="tab-records" type="button" class="active" data-i18n="tabRecords">記録</button>
+    <button id="tab-report" type="button" data-i18n="tabReport">日報</button>
+  </nav>
+  <select id="lang-select" class="lang" aria-label="Language">
+    <option value="auto">Auto</option>
+    <option value="ja">日本語</option>
+    <option value="en">English</option>
+  </select>
+  <button id="logout" type="button" class="logout" data-i18n="logout">ログアウト</button>
+</header>
+
+<div id="error" class="banner" hidden></div>
+
+<main>
+  <section id="records-view">
+    <div class="toolbar">
+      <label for="device-filter" data-i18n="device">端末</label>
+      <select id="device-filter"><option value="">すべて</option></select>
+      <span id="records-count"></span>
+      <span id="updated-at" class="updated"></span>
+      <button id="download-json" type="button" class="download" data-i18n="downloadJson">JSONダウンロード</button>
+    </div>
+    <div class="table-wrap">
+      <table id="records-table">
+        <thead>
+          <tr>
+            <th data-i18n="thTime">時刻</th>
+            <th data-i18n="thDevice">端末</th>
+            <th data-i18n="thApp">アプリ</th>
+            <th data-i18n="thCategory">分類</th>
+            <th data-i18n="thSource">解析元</th>
+            <th data-i18n="thSummary">要約</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <button id="load-more" type="button" class="load-more" hidden>さらに読み込む</button>
+    <p id="records-empty" data-i18n="noRecords" hidden>記録なし</p>
+  </section>
+
+  <section id="report-view" hidden>
+    <article id="report-body" class="markdown"></article>
+    <p id="report-empty" data-i18n="noReport" hidden>日報なし</p>
+  </section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

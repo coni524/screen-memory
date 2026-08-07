@@ -1,0 +1,78 @@
+[package]
+name = "screen-memory"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.104"
+aws-config = "1.10.1"
+aws-sdk-cognitoidentity = "1.107.0"
+aws-sdk-cognitoidentityprovider = "1.127.0"
+aws-sdk-s3 = "1.140.0"
+base64 = "0.23.0"
+chrono = "0.4.45"
+chrono-tz = "0.10.4"
+image = { version = "0.25.10", default-features = false }
+rand = "0.10.2"
+regex = "1.13.1"
+reqwest = { version = "0.13.4", features = ["blocking", "json"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+sha2 = "0.11.0"
+tokio = { version = "1.53.1", default-features = false, features = ["rt", "rt-multi-thread"] }
+toml = "1.1.4"
+toml_edit = "0.25.13"
+tracing = "0.1.44"
+tracing-appender = "0.2.5"
+tracing-subscriber = { version = "0.3.23", features = ["fmt", "json"] }
+webp = "0.3.1"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+tray-icon = "0.24.2"
+windows = { version = "0.62.2", features = [
+    "Foundation",
+    "Foundation_Collections",
+    "Globalization",
+    "Graphics_Imaging",
+    "Media_Ocr",
+    "Security_Cryptography",
+    "Storage_Streams",
+    "Win32_Foundation",
+    "Win32_Globalization",
+    "Win32_Graphics_Dwm",
+    "Win32_Graphics_Gdi",
+    "Win32_Storage_Xps",
+    "Win32_System_Console",
+    "Win32_System_LibraryLoader",
+    "Win32_System_Registry",
+    "Win32_System_SystemInformation",
+    "Win32_System_Threading",
+    "Win32_System_WinRT",
+    "Win32_UI_Controls",
+    "Win32_UI_HiDpi",
+    "Win32_UI_Input_KeyboardAndMouse",
+    "Win32_UI_WindowsAndMessaging",
+] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+block2 = "0.6.2"
+objc2 = "0.6.4"
+objc2-app-kit = "0.3.2"
+objc2-application-services = "0.3.2"
+objc2-core-foundation = { version = "0.3.2", features = [
+    "alloc",
+    "CFArray",
+    "CFCGTypes",
+    "CFData",
+    "CFDictionary",
+    "CFNumber",
+    "CFString",
+] }
+objc2-core-graphics = "0.3.2"
+objc2-foundation = "0.3.2"
+objc2-screen-capture-kit = "0.3.2"
+objc2-vision = "0.3.2"
+tray-icon = "0.24.2"
+
+[target."cfg(unix)".dependencies]
+libc = "0.2.189"

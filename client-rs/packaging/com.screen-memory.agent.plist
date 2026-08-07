@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.screen-memory.agent</string>
+    <!-- Launch the binary inside the .app directly, so that the bundle itself is
+         the responsible process and the Screen Recording permission is tied to it -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Applications/Screen Memory.app/Contents/MacOS/screen-memory</string>
+        <string>menubar</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <!-- Don't relaunch after Quit from the menu (a clean exit); restart only on abnormal exit -->
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>/tmp/screen-memory-agent.out</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/screen-memory-agent.err</string>
+</dict>
+</plist>
