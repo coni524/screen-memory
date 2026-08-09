@@ -1,5 +1,11 @@
 # Screen Memory
 
+[![Release](https://img.shields.io/github/v/release/coni524/screen-memory?label=release)](https://github.com/coni524/screen-memory/releases/latest)
+[![Release build](https://github.com/coni524/screen-memory/actions/workflows/release.yml/badge.svg)](https://github.com/coni524/screen-memory/actions/workflows/release.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![Platform: macOS and Windows](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-lightgrey)
+![Client: Rust](https://img.shields.io/badge/client-Rust-dea584)
+
 [English](README.md) | [日本語](README.ja.md)
 
 Screen Memory quietly captures your active window once a minute and turns those captures into a daily work report, written by AI. If you prefer, it can instead keep everything on your machine and leave the analysis to you.

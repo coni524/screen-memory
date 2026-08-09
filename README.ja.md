@@ -1,5 +1,11 @@
 # Screen Memory
 
+[![Release](https://img.shields.io/github/v/release/coni524/screen-memory?label=release)](https://github.com/coni524/screen-memory/releases/latest)
+[![Release build](https://github.com/coni524/screen-memory/actions/workflows/release.yml/badge.svg)](https://github.com/coni524/screen-memory/actions/workflows/release.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![Platform: macOS and Windows](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-lightgrey)
+![Client: Rust](https://img.shields.io/badge/client-Rust-dea584)
+
 [English](README.md) | [日本語](README.ja.md)
 
 Screen Memory は、作業中のウィンドウを1分ごとに静かに撮影し、その記録から AI が日報を書く個人用ツールです。
