@@ -101,7 +101,7 @@ def test_正常系で活動レコードを保存する(fakes):
     assert item["sk"] == {"S": "TS#10:23:00#mac-main"}
     assert item["category"] == {"S": "coding"}
     assert item["imageKey"] == {"S": METADATA["imageKey"]}
-    assert bedrock.requests[0]["inferenceConfig"] == {"maxTokens": 1024, "temperature": 0}
+    assert bedrock.requests[0]["inferenceConfig"] == {"maxTokens": 2048, "temperature": 0}
 
 
 def test_webp_のイベントは無視する(fakes):
@@ -162,12 +162,40 @@ class TestTextMode:
         assert len(dynamodb.items[0]["ocrText"]["S"]) == handler.OCR_TEXT_MAX
 
 
-def test_stopReason_が_tool_use_でなければ例外(fakes):
-    _, bedrock = fakes
+class TestMaxTokensFallback:
+    def test_max_tokens_なら_ocrText_無しで取り直して保存する(self, fakes):
+        dynamodb, bedrock = fakes
+        responses = [
+            {"stopReason": "max_tokens", "output": {"message": {"content": []}}, "usage": {"inputTokens": 1000, "outputTokens": 2048}},
+            {
+                "stopReason": "tool_use",
+                "output": {"message": {"content": [{"toolUse": {"input": {"category": "coding", "summary": "設計文書を編集していた。"}}}]}},
+                "usage": {"inputTokens": 1000, "outputTokens": 50},
+            },
+        ]
+        requests = []
 
-    def bad_converse(**kwargs):
-        return {"stopReason": "max_tokens", "output": {"message": {"content": []}}, "usage": {}}
+        def fake_converse(**kwargs):
+            requests.append(kwargs)
+            return responses[len(requests) - 1]
 
-    bedrock.converse = bad_converse
-    with pytest.raises(RuntimeError):
+        bedrock.converse = fake_converse
         handler.lambda_handler(s3_event("raw/mac-main/2026/08/01/102300.json"), None)
+        assert len(requests) == 2
+        fallback = requests[1]
+        assert fallback["toolConfig"]["tools"][0]["toolSpec"]["inputSchema"]["json"]["required"] == ["category", "summary"]
+        assert "ocrText" not in fallback["system"][0]["text"]
+        item = dynamodb.items[0]
+        assert item["category"] == {"S": "coding"}
+        assert item["ocrText"] == {"S": ""}
+
+    def test_フォールバックも失敗したら例外(self, fakes):
+        dynamodb, bedrock = fakes
+
+        def bad_converse(**kwargs):
+            return {"stopReason": "max_tokens", "output": {"message": {"content": []}}, "usage": {"inputTokens": 1, "outputTokens": 1}}
+
+        bedrock.converse = bad_converse
+        with pytest.raises(RuntimeError):
+            handler.lambda_handler(s3_event("raw/mac-main/2026/08/01/102300.json"), None)
+        assert dynamodb.items == []

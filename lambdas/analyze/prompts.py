@@ -10,6 +10,16 @@ record_activity ツールで次を報告せよ。
 分類一覧:
 {categories}"""
 
+# max_tokens で打ち切られたときのフォールバック。ocrText を要求しない
+FALLBACK_SYSTEM_PROMPT_TEMPLATE = """あなたはスクリーンショットから作業内容を記録する分類器である。
+与えられた画像は利用者のアクティブウィンドウの撮影で、アプリ名とウィンドウタイトルが添えられている。
+record_activity ツールで次を報告せよ。
+- category: 後述の分類一覧から最も近い id を1つ選ぶ。判断できなければ other。
+- summary: 何をしていたかを日本語一文で。画面の固有の内容（ファイル名、ページ名、相手など）を含める。
+
+分類一覧:
+{categories}"""
+
 TEXT_SYSTEM_PROMPT_TEMPLATE = """あなたは画面の記録から作業内容を記録する分類器である。
 与えられるのは利用者のアクティブウィンドウのアプリ名、ウィンドウタイトル、
 および端末のローカル OCR が画面から抽出したテキストである（画像は無い）。
@@ -44,7 +54,7 @@ TOOL_CONFIG = {
     "toolChoice": {"tool": {"name": "record_activity"}},
 }
 
-# For text mode (local OCR). ocrText comes from the client as-is, so the model does not produce it.
+# For text mode (local OCR) and the image-mode fallback. No ocrText in the schema.
 TEXT_TOOL_CONFIG = {
     "tools": [
         {
@@ -84,3 +94,7 @@ def build_system_prompt(categories: list[dict]) -> str:
 
 def build_text_system_prompt(categories: list[dict]) -> str:
     return TEXT_SYSTEM_PROMPT_TEMPLATE.format(categories=_category_lines(categories))
+
+
+def build_fallback_system_prompt(categories: list[dict]) -> str:
+    return FALLBACK_SYSTEM_PROMPT_TEMPLATE.format(categories=_category_lines(categories))

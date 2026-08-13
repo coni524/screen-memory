@@ -58,22 +58,43 @@ def analyze_image(image_bytes: bytes, metadata: dict, categories: list[dict]) ->
         f"ウィンドウタイトル: {metadata.get('windowTitle', '')}\n"
         f"撮影時刻: {metadata.get('capturedAt', '')}"
     )
+    messages = [
+        {
+            "role": "user",
+            "content": [
+                {"image": {"format": "webp", "source": {"bytes": image_bytes}}},
+                {"text": context_text},
+            ],
+        }
+    ]
     response = bedrock.converse(
         modelId=os.environ["MODEL_ID"],
         system=[{"text": prompts.build_system_prompt(categories)}],
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {"image": {"format": "webp", "source": {"bytes": image_bytes}}},
-                    {"text": context_text},
-                ],
-            }
-        ],
+        messages=messages,
         toolConfig=prompts.TOOL_CONFIG,
+        inferenceConfig={"maxTokens": 2048, "temperature": 0},
+    )
+    if response["stopReason"] != "max_tokens":
+        return parse_tool_response(response)
+
+    # temperature 0 なので同じ呼び出しを再試行しても毎回打ち切られる。
+    # ocrText を諦め、分類と要約だけを軽量スキーマで取り直す
+    truncated_usage = response["usage"]
+    _log(event="fallback_without_ocr", app=metadata.get("app", ""))
+    response = bedrock.converse(
+        modelId=os.environ["MODEL_ID"],
+        system=[{"text": prompts.build_fallback_system_prompt(categories)}],
+        messages=messages,
+        toolConfig=prompts.TEXT_TOOL_CONFIG,
         inferenceConfig={"maxTokens": 1024, "temperature": 0},
     )
-    return parse_tool_response(response)
+    result, usage = parse_tool_response(response)
+    result["ocrText"] = ""
+    usage = {
+        "inputTokens": truncated_usage["inputTokens"] + usage["inputTokens"],
+        "outputTokens": truncated_usage["outputTokens"] + usage["outputTokens"],
+    }
+    return result, usage
 
 
 def analyze_text(metadata: dict, categories: list[dict]) -> tuple[dict, dict]:
