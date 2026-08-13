@@ -77,8 +77,8 @@ def analyze_image(image_bytes: bytes, metadata: dict, categories: list[dict]) ->
     if response["stopReason"] != "max_tokens":
         return parse_tool_response(response)
 
-    # temperature 0 なので同じ呼び出しを再試行しても毎回打ち切られる。
-    # ocrText を諦め、分類と要約だけを軽量スキーマで取り直す
+    # With temperature 0, retrying the same call gets cut off every time.
+    # Give up on ocrText and redo just the category and summary with the lighter schema
     truncated_usage = response["usage"]
     _log(event="fallback_without_ocr", app=metadata.get("app", ""))
     response = bedrock.converse(

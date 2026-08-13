@@ -10,7 +10,7 @@ record_activity ツールで次を報告せよ。
 分類一覧:
 {categories}"""
 
-# max_tokens で打ち切られたときのフォールバック。ocrText を要求しない
+# Fallback for responses cut off at max_tokens. Does not ask for ocrText
 FALLBACK_SYSTEM_PROMPT_TEMPLATE = """あなたはスクリーンショットから作業内容を記録する分類器である。
 与えられた画像は利用者のアクティブウィンドウの撮影で、アプリ名とウィンドウタイトルが添えられている。
 record_activity ツールで次を報告せよ。
